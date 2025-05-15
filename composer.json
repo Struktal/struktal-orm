@@ -1,0 +1,40 @@
+{
+    "name": "jensostertag/database-objects",
+    "description": "",
+    "keywords": [
+        "database",
+        "objects"
+    ],
+    "type": "library",
+    "version": "1.0.0",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jens Ostertag",
+            "email": "development@jens-ostertag.de",
+            "role": "Developer"
+        }
+    ],
+    "autoload":{
+        "psr-4": {
+            "jensostertag\\DatabaseObjects\\": "src/",
+            "jensostertag\\DatabaseObjects\\Database\\": "src/database/"
+        }
+    },
+    "require": {
+        "php": ">=8.2.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "~v3.8.2"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/pest"
+        ]
+    }
+}
