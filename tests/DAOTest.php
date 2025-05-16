@@ -64,30 +64,75 @@ test("Correct DAO objects", function() {
         ->and(ComplexObject::dao())->toBeInstanceOf(ComplexObjectDAO::class);
 });
 
-test("Correct insert terms", function() use ($newSimpleObject, $newExtendedObject, $newComplexObject) {
+test("Correct insert queries", function() use ($newSimpleObject, $newExtendedObject, $newComplexObject) {
     $simpleQuery = SimpleObject::dao()->generateUpsertSql($newSimpleObject);
     $extendedQuery = ExtendedObject::dao()->generateUpsertSql($newExtendedObject);
     $complexQuery = ComplexObject::dao()->generateUpsertSql($newComplexObject);
 
-    $simpleInsertExpectation = "INSERT INTO `SimpleObject` SET `id` = :id, `created` = :created, `updated` = :updated";
-    $extendedInsertExpectation = "INSERT INTO `ExtendedObject` SET `id` = :id, `created` = :created, `updated` = :updated, `name` = :name, `age` = :age";
-    $complexInsertExpectation = "INSERT INTO `ComplexObject` SET `id` = :id, `created` = :created, `updated` = :updated, `name` = :name, `birthdate` = :birthdate, `height` = :height, `active` = :active";
+    $simpleInsertExpectedSql = "INSERT INTO `SimpleObject` SET `id` = :id, `created` = :created, `updated` = :updated";
+    $simpleInsertExpectedParameters = [
+        "id" => null,
+        "created" => $newSimpleObject->created,
+        "updated" => $newSimpleObject->updated
+    ];
+    $extendedInsertExpectedSql = "INSERT INTO `ExtendedObject` SET `id` = :id, `created` = :created, `updated` = :updated, `name` = :name, `age` = :age";
+    $extendedInsertExpectedParameters = [
+        "id" => null,
+        "created" => $newExtendedObject->created,
+        "updated" => $newExtendedObject->updated,
+        "name" => $newExtendedObject->name,
+        "age" => $newExtendedObject->age
+    ];
+    $complexInsertExpectedSql = "INSERT INTO `ComplexObject` SET `id` = :id, `created` = :created, `updated` = :updated, `name` = :name, `birthdate` = :birthdate, `height` = :height, `active` = :active";
+    $complexInsertExpectedParameters = [
+        "id" => null,
+        "created" => $newComplexObject->created,
+        "updated" => $newComplexObject->updated,
+        "name" => $newComplexObject->name,
+        "birthdate" => $newComplexObject->birthdate,
+        "height" => $newComplexObject->height,
+        "active" => $newComplexObject->active
+    ];
 
-    expect($simpleQuery->getSql())->toBe($simpleInsertExpectation)
-        ->and($extendedQuery->getSql())->toBe($extendedInsertExpectation)
-        ->and($complexQuery->getSql())->toBe($complexInsertExpectation);
+    expect($simpleQuery->getSql())->toBe($simpleInsertExpectedSql)
+        ->and($extendedQuery->getSql())->toBe($extendedInsertExpectedSql)
+        ->and($complexQuery->getSql())->toBe($complexInsertExpectedSql)
+        ->and($simpleQuery->getParameters())->toBe($simpleInsertExpectedParameters)
+        ->and($extendedQuery->getParameters())->toBe($extendedInsertExpectedParameters)
+        ->and($complexQuery->getParameters())->toBe($complexInsertExpectedParameters);
 });
 
-test("Correct update terms", function() use ($existingSimpleObject, $existingExtendedObject, $existingComplexObject) {
+test("Correct update queries", function() use ($existingSimpleObject, $existingExtendedObject, $existingComplexObject) {
     $simpleQuery = SimpleObject::dao()->generateUpsertSql($existingSimpleObject);
     $extendedQuery = ExtendedObject::dao()->generateUpsertSql($existingExtendedObject);
     $complexQuery = ComplexObject::dao()->generateUpsertSql($existingComplexObject);
 
-    $simpleUpdateExpectation = "UPDATE `SimpleObject` SET `updated` = :updated WHERE `id` = :id";
-    $extendedUpdateExpectation = "UPDATE `ExtendedObject` SET `updated` = :updated, `name` = :name, `age` = :age WHERE `id` = :id";
-    $complexUpdateExpectation = "UPDATE `ComplexObject` SET `updated` = :updated, `name` = :name, `birthdate` = :birthdate, `height` = :height, `active` = :active WHERE `id` = :id";
+    $simpleUpdateExpectedSql = "UPDATE `SimpleObject` SET `updated` = :updated WHERE `id` = :id";
+    $simpleUpdateExpectedParameters = [
+        "updated" => $existingSimpleObject->updated,
+        "id" => $existingSimpleObject->id
+    ];
+    $extendedUpdateExpectedSql = "UPDATE `ExtendedObject` SET `updated` = :updated, `name` = :name, `age` = :age WHERE `id` = :id";
+    $extendedUpdateExpectedParameters = [
+        "updated" => $existingExtendedObject->updated,
+        "name" => $existingExtendedObject->name,
+        "age" => $existingExtendedObject->age,
+        "id" => $existingExtendedObject->id
+    ];
+    $complexUpdateExpectedSql = "UPDATE `ComplexObject` SET `updated` = :updated, `name` = :name, `birthdate` = :birthdate, `height` = :height, `active` = :active WHERE `id` = :id";
+    $complexUpdateExpectedParameters = [
+        "updated" => $existingComplexObject->updated,
+        "name" => $existingComplexObject->name,
+        "birthdate" => $existingComplexObject->birthdate,
+        "height" => $existingComplexObject->height,
+        "active" => $existingComplexObject->active,
+        "id" => $existingComplexObject->id
+    ];
 
-    expect($simpleQuery->getSql())->toBe($simpleUpdateExpectation)
-        ->and($extendedQuery->getSql())->toBe($extendedUpdateExpectation)
-        ->and($complexQuery->getSql())->toBe($complexUpdateExpectation);
+    expect($simpleQuery->getSql())->toBe($simpleUpdateExpectedSql)
+        ->and($extendedQuery->getSql())->toBe($extendedUpdateExpectedSql)
+        ->and($complexQuery->getSql())->toBe($complexUpdateExpectedSql)
+        ->and($simpleQuery->getParameters())->toBe($simpleUpdateExpectedParameters)
+        ->and($extendedQuery->getParameters())->toBe($extendedUpdateExpectedParameters)
+        ->and($complexQuery->getParameters())->toBe($complexUpdateExpectedParameters);
 });
