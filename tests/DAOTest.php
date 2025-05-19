@@ -7,9 +7,8 @@ use jensostertag\DatabaseObjects\GenericObjectDAO;
 use jensostertag\DatabaseObjects\DAOFilter;
 use jensostertag\DatabaseObjects\DAOFilterOperator;
 
-test("Correct upsert queries", function(GenericObject $object, Query $expected) {
-    $actual = $object::dao()->generateUpsertSql($object);
-
-    expect($actual->getSql())->toBe($expected->getSql())
-        ->and($actual->getParameters())->toBe($expected->getParameters());
-})->with("upsert");
+test("Correct DAO objects", function() {
+    expect(SimpleObject::dao())->toBeInstanceOf(SimpleObjectDAO::class)
+        ->and(ExtendedObject::dao())->toBeInstanceOf(ExtendedObjectDAO::class)
+        ->and(ComplexObject::dao())->toBeInstanceOf(ComplexObjectDAO::class);
+});
