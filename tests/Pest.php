@@ -132,3 +132,67 @@ dataset("upsert", [
         )
     ]
 ]);
+
+dataset("select", [
+    "simpleGetAll" => [
+        SimpleObject::class,
+        [],
+        new Query(
+            "SELECT * FROM `SimpleObject` ORDER BY `id` ASC",
+            []
+        )
+    ],
+    "complexGetAll" => [
+        ComplexObject::class,
+        [],
+        new Query(
+            "SELECT * FROM `ComplexObject` ORDER BY `id` ASC",
+            []
+        )
+    ],
+    "simpleGetWithSimpleFilter" => [
+        SimpleObject::class,
+        [
+            "filter" => [
+                "id" => $existingSimpleObject->getId()
+            ]
+        ],
+        new Query(
+            "SELECT * FROM `SimpleObject` WHERE `id` = :id ORDER BY `id` ASC",
+            [
+                "id" => $existingSimpleObject->getId()
+            ]
+        )
+    ],
+    "complexGetWithSimpleFilterAndOrder" => [
+        ComplexObject::class,
+        [
+            "filter" => [
+                "id" => $existingComplexObject->getId()
+            ],
+            "orderBy" => "name",
+            "orderAsc" => false
+        ],
+        new Query(
+            "SELECT * FROM `ComplexObject` WHERE `id` = :id ORDER BY `name` DESC",
+            [
+                "id" => $existingComplexObject->getId()
+            ]
+        )
+    ],
+    "complexGetWithSimpleFilterAndLimit" => [
+        ComplexObject::class,
+        [
+            "filter" => [
+                "id" => $existingComplexObject->getId()
+            ],
+            "limit" => 1
+        ],
+        new Query(
+            "SELECT * FROM `ComplexObject` WHERE `id` = :id ORDER BY `id` ASC LIMIT 1 OFFSET 0",
+            [
+                "id" => $existingComplexObject->getId()
+            ]
+        )
+    ]
+]);
