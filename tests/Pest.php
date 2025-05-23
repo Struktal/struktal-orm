@@ -194,5 +194,29 @@ dataset("select", [
                 "id" => $existingComplexObject->getId()
             ]
         )
+    ],
+    "complexGetWithComplexFilter" => [
+        ComplexObject::class,
+        [
+            "filter" => [
+                new DAOFilter(
+                    DAOFilterOperator::NOT_EQUALS,
+                    "name",
+                    $existingComplexObject->name
+                ),
+                new DAOFilter(
+                    DAOFilterOperator::GREATER_THAN,
+                    "height",
+                    $existingComplexObject->height
+                )
+            ]
+        ],
+        new Query(
+            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `height` > :1 ORDER BY `id` ASC",
+            [
+                0 => $existingComplexObject->name,
+                1 => $existingComplexObject->height
+            ]
+        )
     ]
 ]);
