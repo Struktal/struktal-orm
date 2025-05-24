@@ -98,7 +98,7 @@ enum DAOFilterOperator {
             case self::LIKE:
                 if($value !== null) {
                     return [
-                        $property => $value
+                        $index => $value
                     ];
                 }
                 break;
