@@ -218,5 +218,57 @@ dataset("select", [
                 1 => $existingComplexObject->height
             ]
         )
+    ],
+    "complexGetWithComplexFilterAndOrder" => [
+        ComplexObject::class,
+        [
+            "filter" => [
+                new DAOFilter(
+                    DAOFilterOperator::NOT_EQUALS,
+                    "name",
+                    $existingComplexObject->name
+                ),
+                new DAOFilter(
+                    DAOFilterOperator::GREATER_THAN,
+                    "height",
+                    $existingComplexObject->height
+                )
+            ],
+            "orderBy" => "birthdate",
+            "orderAsc" => true
+        ],
+        new Query(
+            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `height` > :1 ORDER BY `birthdate` ASC",
+            [
+                0 => $existingComplexObject->name,
+                1 => $existingComplexObject->height
+            ]
+        )
+    ],
+    "complexGetWithComplexFilterAndLimit" => [
+        ComplexObject::class,
+        [
+            "filter" => [
+                new DAOFilter(
+                    DAOFilterOperator::NOT_EQUALS,
+                    "name",
+                    $existingComplexObject->name
+                ),
+                new DAOFilter(
+                    DAOFilterOperator::GREATER_THAN,
+                    "height",
+                    $existingComplexObject->height
+                )
+            ],
+            "limit" => 5,
+            "offset" => 10
+        ],
+        new Query(
+            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `height` > :1 ORDER BY `id` ASC LIMIT 5 OFFSET 10",
+            [
+                0 => $existingComplexObject->name,
+                1 => $existingComplexObject->height
+            ]
+        )
     ]
 ]);
