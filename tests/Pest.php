@@ -270,5 +270,87 @@ dataset("select", [
                 1 => $existingComplexObject->height
             ]
         )
+    ],
+    "complexGetWithMixedFilter" => [
+        ComplexObject::class,
+        [
+            "filter" => [
+                new DAOFilter(
+                    DAOFilterOperator::NOT_EQUALS,
+                    "name",
+                    $existingComplexObject->name
+                ),
+                new DAOFilter(
+                    DAOFilterOperator::GREATER_THAN,
+                    "height",
+                    $existingComplexObject->height
+                ),
+                "active" => true
+            ]
+        ],
+        new Query(
+            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `height` > :1 AND `active` = :active ORDER BY `id` ASC",
+            [
+                0 => $existingComplexObject->name,
+                1 => $existingComplexObject->height,
+                "active" => true
+            ]
+        )
+    ],
+    "complexGetWithMixedFilterAndOrder" => [
+        ComplexObject::class,
+        [
+            "filter" => [
+                new DAOFilter(
+                    DAOFilterOperator::NOT_EQUALS,
+                    "name",
+                    $existingComplexObject->name
+                ),
+                "active" => true,
+                new DAOFilter(
+                    DAOFilterOperator::GREATER_THAN,
+                    "height",
+                    $existingComplexObject->height
+                )
+            ],
+            "orderBy" => "birthdate",
+            "orderAsc" => false
+        ],
+        new Query(
+            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `active` = :active AND `height` > :1 ORDER BY `birthdate` DESC",
+            [
+                0 => $existingComplexObject->name,
+                "active" => true,
+                1 => $existingComplexObject->height
+            ]
+        )
+    ],
+    "complexGetWithMixedFilterAndLimit" => [
+        ComplexObject::class,
+        [
+            "filter" => [
+                "active" => true,
+                new DAOFilter(
+                    DAOFilterOperator::NOT_EQUALS,
+                    "name",
+                    $existingComplexObject->name
+                ),
+                new DAOFilter(
+                    DAOFilterOperator::GREATER_THAN,
+                    "height",
+                    $existingComplexObject->height
+                )
+            ],
+            "limit" => 3,
+            "offset" => 1
+        ],
+        new Query(
+            "SELECT * FROM `ComplexObject` WHERE `active` = :active AND `name` != :0 AND `height` > :1 ORDER BY `id` ASC LIMIT 3 OFFSET 1",
+            [
+                "active" => true,
+                0 => $existingComplexObject->name,
+                1 => $existingComplexObject->height
+            ]
+        )
     ]
 ]);
