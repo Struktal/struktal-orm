@@ -133,6 +133,36 @@ dataset("upsert", [
     ]
 ]);
 
+dataset("delete", [
+    "simpleDelete" => [
+        $existingSimpleObject,
+        new Query(
+            "DELETE FROM `SimpleObject` WHERE `id` = :id",
+            [
+                "id" => $existingSimpleObject->id
+            ]
+        )
+    ],
+    "extendedDelete" => [
+        $existingExtendedObject,
+        new Query(
+            "DELETE FROM `ExtendedObject` WHERE `id` = :id",
+            [
+                "id" => $existingExtendedObject->id
+            ]
+        )
+    ],
+    "complexDelete" => [
+        $existingComplexObject,
+        new Query(
+            "DELETE FROM `ComplexObject` WHERE `id` = :id",
+            [
+                "id" => $existingComplexObject->id
+            ]
+        )
+    ]
+]);
+
 dataset("select", [
     "simpleGetAll" => [
         SimpleObject::class,
