@@ -384,3 +384,190 @@ dataset("select", [
         )
     ]
 ]);
+
+dataset("daoFilter", [
+    "equalsString" => [
+        new DAOFilter(DAOFilterOperator::EQUALS, "name", "John Doe"),
+        0,
+        new Query(
+            "`name` = :0",
+            ["0" => "John Doe"]
+        )
+    ],
+    "equalsNumber" => [
+        new DAOFilter(DAOFilterOperator::EQUALS, "age", 30),
+        0,
+        new Query(
+            "`age` = :0",
+            ["0" => 30]
+        )
+    ],
+    "equalsNull" => [
+        new DAOFilter(DAOFilterOperator::EQUALS, "name", null),
+        0,
+        new Query(
+            "`name` IS NULL",
+            []
+        )
+    ],
+    "notEqualsString" => [
+        new DAOFilter(DAOFilterOperator::NOT_EQUALS, "name", "John Doe"),
+        0,
+        new Query(
+            "`name` != :0",
+            ["0" => "John Doe"]
+        )
+    ],
+    "notEqualsNumber" => [
+        new DAOFilter(DAOFilterOperator::NOT_EQUALS, "age", 30),
+        0,
+        new Query(
+            "`age` != :0",
+            ["0" => 30]
+        )
+    ],
+    "notEqualsNull" => [
+        new DAOFilter(DAOFilterOperator::NOT_EQUALS, "name", null),
+        0,
+        new Query(
+            "`name` IS NOT NULL",
+            []
+        )
+    ],
+    "greaterThan" => [
+        new DAOFilter(DAOFilterOperator::GREATER_THAN, "age", 30),
+        0,
+        new Query(
+            "`age` > :0",
+            ["0" => 30]
+        )
+    ],
+    "lessThan" => [
+        new DAOFilter(DAOFilterOperator::LESS_THAN, "age", 30),
+        0,
+        new Query(
+            "`age` < :0",
+            ["0" => 30]
+        )
+    ],
+    "greaterThanEquals" => [
+        new DAOFilter(DAOFilterOperator::GREATER_THAN_EQUALS, "age", 30),
+        0,
+        new Query(
+            "`age` >= :0",
+            ["0" => 30]
+        )
+    ],
+    "lessThanEquals" => [
+        new DAOFilter(DAOFilterOperator::LESS_THAN_EQUALS, "age", 30),
+        0,
+        new Query(
+            "`age` <= :0",
+            ["0" => 30]
+        )
+    ],
+    "like" => [
+        new DAOFilter(DAOFilterOperator::LIKE, "name", "%John%"),
+        0,
+        new Query(
+            "`name` LIKE :0",
+            ["0" => "%John%"]
+        )
+    ],
+    "inArrayWithStrings" => [
+        new DAOFilter(DAOFilterOperator::IN, "name", ["John Doe", "Jane Doe"]),
+        0,
+        new Query(
+            "`name` IN (:0_0, :0_1)",
+            ["0_0" => "John Doe", "0_1" => "Jane Doe"]
+        )
+    ],
+    "inArrayWithNumbers" => [
+        new DAOFilter(DAOFilterOperator::IN, "age", [25, 30]),
+        0,
+        new Query(
+            "`age` IN (:0_0, :0_1)",
+            ["0_0" => 25, "0_1" => 30]
+        )
+    ],
+    "inArrayWithOneNull" => [
+        new DAOFilter(DAOFilterOperator::IN, "name", [null]),
+        0,
+        new Query(
+            "`name` IS NULL",
+            []
+        )
+    ],
+    "inArrayWithMultipleNulls" => [
+        new DAOFilter(DAOFilterOperator::IN, "name", [null, null]),
+        0,
+        new Query(
+            "`name` IS NULL",
+            []
+        )
+    ],
+    "inArrayWithMixed" => [
+        new DAOFilter(DAOFilterOperator::IN, "name", ["John Doe", null, "Jane Doe", 30]),
+        0,
+        new Query(
+            "(`name` IS NULL OR `name` IN (:0_0, :0_2, :0_3))",
+            ["0_0" => "John Doe", "0_2" => "Jane Doe", "0_3" => 30]
+        )
+    ],
+    "inArrayWithEmpty" => [
+        new DAOFilter(DAOFilterOperator::IN, "name", []),
+        0,
+        new Query(
+            "1 = 0",
+            []
+        )
+    ],
+    "notInArrayWithStrings" => [
+        new DAOFilter(DAOFilterOperator::NOT_IN, "name", ["John Doe", "Jane Doe"]),
+        0,
+        new Query(
+            "`name` NOT IN (:0_0, :0_1)",
+            ["0_0" => "John Doe", "0_1" => "Jane Doe"]
+        )
+    ],
+    "notInArrayWithNumbers" => [
+        new DAOFilter(DAOFilterOperator::NOT_IN, "age", [25, 30]),
+        0,
+        new Query(
+            "`age` NOT IN (:0_0, :0_1)",
+            ["0_0" => 25, "0_1" => 30]
+        )
+    ],
+    "notInArrayWithOneNull" => [
+        new DAOFilter(DAOFilterOperator::NOT_IN, "name", [null]),
+        0,
+        new Query(
+            "`name` IS NOT NULL",
+            []
+        )
+    ],
+    "notInArrayWithMultipleNulls" => [
+        new DAOFilter(DAOFilterOperator::NOT_IN, "name", [null, null]),
+        0,
+        new Query(
+            "`name` IS NOT NULL",
+            []
+        )
+    ],
+    "notInArrayWithMixed" => [
+        new DAOFilter(DAOFilterOperator::NOT_IN, "name", ["John Doe", null, "Jane Doe", 30]),
+        0,
+        new Query(
+            "(`name` IS NOT NULL AND `name` NOT IN (:0_0, :0_2, :0_3))",
+            ["0_0" => "John Doe", "0_2" => "Jane Doe", "0_3" => 30]
+        )
+    ],
+    "notInArrayWithEmpty" => [
+        new DAOFilter(DAOFilterOperator::NOT_IN, "name", []),
+        0,
+        new Query(
+            "1 = 1",
+            []
+        )
+    ],
+]);

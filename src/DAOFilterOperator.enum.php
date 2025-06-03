@@ -74,7 +74,11 @@ enum DAOFilterOperator {
                     } else if($includesNull) {
                         $sql .= "`{$property}` IS " . ($this === self::NOT_IN ? "NOT " : "") . "NULL";
                     } else {
-                        $sql .= "1 = 0";
+                        if($this === self::IN) {
+                            $sql .= "1 = 0"; // All values have to be in empty array, always false
+                        } else if($this === self::NOT_IN) {
+                            $sql .= "1 = 1"; // All values must not be in empty array, always true
+                        }
                     }
                 } else if($value === null) {
                     $sql .= "`{$property}` IS " . ($this === self::NOT_IN ? "NOT " : "") . "NULL";
