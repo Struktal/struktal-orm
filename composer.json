@@ -1,5 +1,5 @@
 {
-    "name": "jensostertag/database-objects",
+    "name": "struktal/database-objects",
     "description": "PHP library implementing the DAO pattern for easier database handling",
     "keywords": [
         "database",
@@ -16,8 +16,8 @@
     ],
     "autoload":{
         "psr-4": {
-            "jensostertag\\DatabaseObjects\\": "src/",
-            "jensostertag\\DatabaseObjects\\Database\\": "src/database/"
+            "struktal\\DatabaseObjects\\": "src/",
+            "struktal\\DatabaseObjects\\Database\\": "src/database/"
         }
     },
     "require": {
