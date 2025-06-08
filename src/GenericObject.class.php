@@ -1,6 +1,6 @@
 <?php
 
-namespace jensostertag\DatabaseObjects;
+namespace struktal\DatabaseObjects;
 
 use \DateTime;
 use \DateTimeImmutable;

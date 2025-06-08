@@ -1,6 +1,6 @@
 <?php
 
-namespace jensostertag\DatabaseObjects;
+namespace struktal\DatabaseObjects;
 
 enum DAOFilterOperator {
     case EQUALS;

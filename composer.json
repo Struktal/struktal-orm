@@ -7,13 +7,6 @@
     ],
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Jens Ostertag",
-            "email": "development@jens-ostertag.de",
-            "role": "Developer"
-        }
-    ],
     "autoload":{
         "psr-4": {
             "struktal\\DatabaseObjects\\": "src/",

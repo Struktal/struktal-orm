@@ -1,9 +1,9 @@
 <?php
 
-namespace jensostertag\DatabaseObjects;
+namespace struktal\DatabaseObjects;
 
-use jensostertag\DatabaseObjects\Database\Database;
-use jensostertag\DatabaseObjects\Database\Query;
+use struktal\DatabaseObjects\Database\Database;
+use struktal\DatabaseObjects\Database\Query;
 use \PDO;
 use \PDOStatement;
 

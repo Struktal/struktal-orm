@@ -1,6 +1,6 @@
 <?php
 
-namespace jensostertag\DatabaseObjects\Database;
+namespace struktal\DatabaseObjects\Database;
 
 use \PDO;
 

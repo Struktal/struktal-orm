@@ -7,12 +7,12 @@ include "src/DAOFilter.class.php";
 include "src/GenericObject.class.php";
 include "src/GenericObjectDAO.class.php";
 
-use jensostertag\DatabaseObjects\Database\Database;
-use jensostertag\DatabaseObjects\Database\Query;
-use jensostertag\DatabaseObjects\GenericObject;
-use jensostertag\DatabaseObjects\GenericObjectDAO;
-use jensostertag\DatabaseObjects\DAOFilter;
-use jensostertag\DatabaseObjects\DAOFilterOperator;
+use struktal\DatabaseObjects\Database\Database;
+use struktal\DatabaseObjects\Database\Query;
+use struktal\DatabaseObjects\GenericObject;
+use struktal\DatabaseObjects\GenericObjectDAO;
+use struktal\DatabaseObjects\DAOFilter;
+use struktal\DatabaseObjects\DAOFilterOperator;
 
 class SimpleObject extends GenericObject {}
 class SimpleObjectDAO extends GenericObjectDAO {}
