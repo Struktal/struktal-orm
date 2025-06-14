@@ -7,7 +7,7 @@ This is a PHP library that provides helpful classes and methods for working with
 To install this library, include it in your project using Composer:
 
 ```bash
-composer require struktal/database-objects
+composer require struktal/struktal-database-objects
 ```
 
 # Data access object (DAO) pattern

@@ -1,5 +1,5 @@
 {
-    "name": "struktal/database-objects",
+    "name": "struktal/struktal-database-objects",
     "description": "PHP library implementing the DAO pattern for easier database handling",
     "keywords": [
         "database",
