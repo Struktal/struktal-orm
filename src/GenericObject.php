@@ -1,6 +1,6 @@
 <?php
 
-namespace struktal\DatabaseObjects;
+namespace struktal\ORM;
 
 use \DateTime;
 use \DateTimeImmutable;

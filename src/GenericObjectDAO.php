@@ -1,9 +1,9 @@
 <?php
 
-namespace struktal\DatabaseObjects;
+namespace struktal\ORM;
 
-use struktal\DatabaseObjects\Database\Database;
-use struktal\DatabaseObjects\Database\Query;
+use struktal\ORM\Database\Database;
+use struktal\ORM\Database\Query;
 use \PDO;
 use \PDOStatement;
 

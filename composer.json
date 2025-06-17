@@ -1,5 +1,5 @@
 {
-    "name": "struktal/struktal-database-objects",
+    "name": "struktal/struktal-orm",
     "description": "PHP library implementing the DAO pattern for easier database handling",
     "keywords": [
         "database",
@@ -9,12 +9,13 @@
     "license": "MIT",
     "autoload":{
         "psr-4": {
-            "struktal\\DatabaseObjects\\": "src/",
-            "struktal\\DatabaseObjects\\Database\\": "src/database/"
+            "struktal\\ORM\\": "src/",
+            "struktal\\ORM\\Database\\": "src/database/"
         }
     },
     "require": {
-        "php": ">=8.2.0"
+        "php": ">=8.2.0",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "pestphp/pest": "~v3.8.2"

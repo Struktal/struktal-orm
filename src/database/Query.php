@@ -1,6 +1,6 @@
 <?php
 
-namespace struktal\DatabaseObjects\Database;
+namespace struktal\ORM\Database;
 
 class Query {
     private string $sql;

@@ -1,11 +1,11 @@
 <?php
 
-use struktal\DatabaseObjects\Database\Database;
-use struktal\DatabaseObjects\Database\Query;
-use struktal\DatabaseObjects\GenericObject;
-use struktal\DatabaseObjects\GenericObjectDAO;
-use struktal\DatabaseObjects\DAOFilter;
-use struktal\DatabaseObjects\DAOFilterOperator;
+use struktal\ORM\Database\Database;
+use struktal\ORM\Database\Query;
+use struktal\ORM\GenericObject;
+use struktal\ORM\GenericObjectDAO;
+use struktal\ORM\DAOFilter;
+use struktal\ORM\DAOFilterOperator;
 
 test("Correct delete queries", function(GenericObject $object, Query $expected) {
     $actual = $object::dao()->generateDeleteSql($object);

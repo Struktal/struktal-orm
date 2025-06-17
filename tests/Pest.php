@@ -1,18 +1,18 @@
 <?php
 
-include "src/database/Database.class.php";
-include "src/database/Query.class.php";
-include "src/DAOFilterOperator.enum.php";
-include "src/DAOFilter.class.php";
-include "src/GenericObject.class.php";
-include "src/GenericObjectDAO.class.php";
+include "src/database/Database.php";
+include "src/database/Query.php";
+include "src/DAOFilterOperator.php";
+include "src/DAOFilter.php";
+include "src/GenericObject.php";
+include "src/GenericObjectDAO.php";
 
-use struktal\DatabaseObjects\Database\Database;
-use struktal\DatabaseObjects\Database\Query;
-use struktal\DatabaseObjects\GenericObject;
-use struktal\DatabaseObjects\GenericObjectDAO;
-use struktal\DatabaseObjects\DAOFilter;
-use struktal\DatabaseObjects\DAOFilterOperator;
+use struktal\ORM\Database\Database;
+use struktal\ORM\Database\Query;
+use struktal\ORM\GenericObject;
+use struktal\ORM\GenericObjectDAO;
+use struktal\ORM\DAOFilter;
+use struktal\ORM\DAOFilterOperator;
 
 class SimpleObject extends GenericObject {}
 class SimpleObjectDAO extends GenericObjectDAO {}

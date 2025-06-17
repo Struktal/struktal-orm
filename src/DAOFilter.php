@@ -1,6 +1,6 @@
 <?php
 
-namespace struktal\DatabaseObjects;
+namespace struktal\ORM;
 
 class DAOFilter {
     public DAOFilterOperator $operator;

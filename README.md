@@ -1,4 +1,4 @@
-# database-objects
+# Struktal-ORM
 
 This is a PHP library that provides helpful classes and methods for working with objects that are stored in a database.
 
@@ -7,7 +7,7 @@ This is a PHP library that provides helpful classes and methods for working with
 To install this library, include it in your project using Composer:
 
 ```bash
-composer require struktal/struktal-database-objects
+composer require struktal/struktal-orm
 ```
 
 # Data access object (DAO) pattern
@@ -25,7 +25,7 @@ Before you can use this library, you need to connect it to your database.
 You can do this in the startup of your application:
 
 ```php
-\struktal\DatabaseObjects\Database::connect(
+\struktal\ORM\Database::connect(
     $host,
     $database,
     $username,
@@ -37,7 +37,7 @@ Then, you can use the library's features in your code.
 
 ## Inheriting from model and data access objects
 
-To prevent you from having to write the same code over and over again, there are classes called `GenericObject` (model object) and `GenericObjectDAO` (data access object interface) that every custom object should extend from within the namespace `\struktal\DatabaseObjects`. The `GenericObject` class already implements the table columns
+To prevent you from having to write the same code over and over again, there are classes called `GenericObject` (model object) and `GenericObjectDAO` (data access object interface) that every custom object should extend from within the namespace `\struktal\ORM`. The `GenericObject` class already implements the table columns
 
 - `id` (integer) - The unique identifier of the object
 - `created` (datetime) - The date and time when the object was created
@@ -50,11 +50,11 @@ and the `GenericObjectDAO` the standard operations
 - `getObject(...)` to get a single object from the database
 - `getObjects(...)` to get multiple objects from the database
 
-To set up a new object, you need to create a new class with the same name as the table in the database, and extend it from `\struktal\DatabaseObjects\GenericObject`.
+To set up a new object, you need to create a new class with the same name as the table in the database, and extend it from `\struktal\ORM\GenericObject`.
 For example, if you have a table called `User`, you would create a class like this:
 
 ```php
-class User extends \struktal\DatabaseObjects\GenericObject {
+class User extends \struktal\ORM\GenericObject {
     public string $username;
     public string $password;
     
@@ -62,12 +62,12 @@ class User extends \struktal\DatabaseObjects\GenericObject {
 }
 ```
 
-Next, you'll also have to create a new DAO class that extends `\struktal\DatabaseObjects\GenericObjectDAO`.
+Next, you'll also have to create a new DAO class that extends `\struktal\ORM\GenericObjectDAO`.
 The DAO's class name should be the same as the model object's class name, but with `DAO` appended to it.
 For the `User` model object, the DAO class would look like this:
 
 ```php
-class UserDAO extends \struktal\DatabaseObjects\GenericObjectDAO {
+class UserDAO extends \struktal\ORM\GenericObjectDAO {
     // Basic DAO methods already implemented in GenericObjectDAO
 }
 ```
@@ -139,13 +139,13 @@ Use it as follows:
 
 ```php
 $users = User::dao()->getObjects([
-    new \struktal\DatabaseObjects\DAOFilter(
-        \struktal\DatabaseObjects\DAOFilterType::LIKE,
+    new \struktal\ORM\DAOFilter(
+        \struktal\ORM\DAOFilterType::LIKE,
         "username",
         "John%"
     ),
-    new \struktal\DatabaseObjects\DAOFilter(
-        \struktal\DatabaseObjects\DAOFilterType::GREATER_THAN,
+    new \struktal\ORM\DAOFilter(
+        \struktal\ORM\DAOFilterType::GREATER_THAN,
         "id",
         10
     )
