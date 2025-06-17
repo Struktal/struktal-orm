@@ -18,6 +18,10 @@ class GenericObjectDAO {
         $this->CLASS_INSTANCE = $CLASS_INSTANCE;
     }
 
+    public function getObjectName(): string {
+        return $this->CLASS_INSTANCE;
+    }
+
     /**
      * Saves an object with its current attributes to the database
      * @param GenericObject $object
