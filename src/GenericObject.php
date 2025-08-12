@@ -31,7 +31,7 @@ class GenericObject {
                 $daoClassName = get_called_class() . "DAO";
                 self::$dao[get_called_class()] = new $daoClassName(get_called_class());
             } else {
-                error_log("DAO for class " . get_called_class() . " requested, but not found");
+                trigger_error("DAO for class " . get_called_class() . " requested, but not found", E_USER_WARNING);
             }
         }
 
@@ -51,7 +51,7 @@ class GenericObject {
             $propertyName = $property->getName();
 
             if(!array_key_exists($propertyName, $data)) {
-                error_log("Property \"{$propertyName}\" does not exist in data array");
+                trigger_error("Property \"{$propertyName}\" does not exist in data array", E_USER_WARNING);
                 continue;
             }
 
