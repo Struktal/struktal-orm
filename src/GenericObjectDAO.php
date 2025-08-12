@@ -46,7 +46,7 @@ class GenericObjectDAO {
 
             return true;
         } else {
-            error_log("Trying to save " . get_class($object) . ", but table does not exist");
+            trigger_error("Trying to save " . get_class($object) . ", but table does not exist", E_USER_WARNING);
         }
 
         return false;
@@ -72,10 +72,10 @@ class GenericObjectDAO {
 
                 return true;
             } else {
-                error_log("Trying to delete " . get_class($object) . ", but id is null");
+                trigger_error("Trying to delete " . get_class($object) . ", but id is null", E_USER_WARNING);
             }
         } else {
-            error_log("Trying to delete " . get_class($object) . ", but table does not exist");
+            trigger_error("Trying to delete " . get_class($object) . ", but table does not exist", E_USER_WARNING);
         }
 
         return false;
@@ -129,7 +129,7 @@ class GenericObjectDAO {
 
             return $objects;
         } else {
-            error_log("Trying to get " . $this->CLASS_INSTANCE . ", but table does not exist");
+            trigger_error("Trying to get " . $this->CLASS_INSTANCE . ", but table does not exist", E_USER_WARNING);
         }
 
         return [];
