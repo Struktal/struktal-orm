@@ -37,24 +37,24 @@ Then, you can use the library's features in your code.
 
 ## Inheriting from model and data access objects
 
-To prevent you from having to write the same code over and over again, there are classes called `GenericObject` (model object) and `GenericObjectDAO` (data access object interface) that every custom object should extend from within the namespace `\struktal\ORM`. The `GenericObject` class already implements the table columns
+To prevent you from having to write the same code over and over again, there are classes called `GenericEntity` (model object) and `GenericEntityDAO` (data access object interface) that every custom object should extend from within the namespace `\struktal\ORM`. The `GenericEntity` class already implements the table columns
 
 - `id` (integer) - The unique identifier of the object
 - `created` (datetime) - The date and time when the object was created
 - `updated` (datetime) - The date and time when the object was last updated
 
-and the `GenericObjectDAO` the standard operations
+and the `GenericEntityDAO` the standard operations
 
 - `save(GenericObject $object)` to upsert an object's database entry
 - `delete(GenericObject $object)` to delete an object's database entry
 - `getObject(...)` to get a single object from the database
 - `getObjects(...)` to get multiple objects from the database
 
-To set up a new object, you need to create a new class with the same name as the table in the database, and extend it from `\struktal\ORM\GenericObject`.
+To set up a new object, you need to create a new class with the same name as the table in the database, and extend it from `\struktal\ORM\GenericEntity`.
 For example, if you have a table called `User`, you would create a class like this:
 
 ```php
-class User extends \struktal\ORM\GenericObject {
+class User extends \struktal\ORM\GenericEntity {
     public string $username;
     public string $password;
     
@@ -62,13 +62,13 @@ class User extends \struktal\ORM\GenericObject {
 }
 ```
 
-Next, you'll also have to create a new DAO class that extends `\struktal\ORM\GenericObjectDAO`.
+Next, you'll also have to create a new DAO class that extends `\struktal\ORM\GenericEntityDAO`.
 The DAO's class name should be the same as the model object's class name, but with `DAO` appended to it.
 For the `User` model object, the DAO class would look like this:
 
 ```php
-class UserDAO extends \struktal\ORM\GenericObjectDAO {
-    // Basic DAO methods already implemented in GenericObjectDAO
+class UserDAO extends \struktal\ORM\GenericEntityDAO {
+    // Basic DAO methods already implemented in GenericEntityDAO
 }
 ```
 

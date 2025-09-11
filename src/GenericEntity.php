@@ -8,7 +8,7 @@ use \ReflectionClass;
 use \ReflectionProperty;
 use \ReflectionNamedType;
 
-class GenericObject {
+class GenericEntity extends internal\GenericObject {
     private static array $dao = [];
 
     public ?int $id;
@@ -23,9 +23,9 @@ class GenericObject {
 
     /**
      * Returns the data access object for this class
-     * @return GenericObjectDAO
+     * @return GenericEntityDAO
      */
-    public static function dao(): GenericObjectDAO {
+    public static function dao(): GenericEntityDAO {
         if(!(array_key_exists(get_called_class(), self::$dao))) {
             if(class_exists(get_called_class() . "DAO")) {
                 $daoClassName = get_called_class() . "DAO";
@@ -67,6 +67,25 @@ class GenericObject {
                 } else if($propertyType->getName() === DateTimeImmutable::class) {
                     $this->$propertyName = DateTimeImmutable::createFromFormat("Y-m-d H:i:s.v", $data[$propertyName]);
                     continue;
+                } else if(!$propertyType->isBuiltin()) {
+                    try {
+                        $propertyReflection = new ReflectionClass($propertyType->getName());
+                        if($propertyReflection->isSubclassOf(GenericEntity::class)) {
+                            $dao = call_user_func([$propertyType->getName(), "dao"]);
+
+                            $object = $dao->getObject([
+                                "id" => $data[$propertyName]
+                            ]);
+
+                            $this->$propertyName = $object;
+                            continue;
+                        } else if($propertyReflection->isEnum() && $propertyReflection->implementsInterface(ORMEnum::class)) {
+                            $this->$propertyName = call_user_func([$propertyType->getName(), "tryFrom"], $data[$propertyName]);
+                            continue;
+                        }
+                    } catch(\ReflectionException $e) {
+                        trigger_error("Could not reflect property type \"" . $propertyType->getName() . "\" for property \"" . $propertyName . "\": " . $e->getMessage(), E_USER_WARNING);
+                    }
                 }
             }
 

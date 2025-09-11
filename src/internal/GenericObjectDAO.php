@@ -1,9 +1,11 @@
 <?php
 
-namespace struktal\ORM;
+namespace struktal\ORM\internal;
 
 use struktal\ORM\Database\Database;
 use struktal\ORM\Database\Query;
+use struktal\ORM\GenericEntity;
+use struktal\ORM\ORMEnum;
 use \PDO;
 use \PDOStatement;
 
@@ -11,11 +13,15 @@ use \DateTime;
 use \DateTimeImmutable;
 use \DateTimeInterface;
 
-class GenericObjectDAO {
+abstract class GenericObjectDAO {
     private string $CLASS_INSTANCE = "";
 
     public function __construct($CLASS_INSTANCE) {
         $this->CLASS_INSTANCE = $CLASS_INSTANCE;
+    }
+
+    protected function getClassInstance(): string {
+        return $this->CLASS_INSTANCE;
     }
 
     /**
@@ -24,9 +30,7 @@ class GenericObjectDAO {
      * @return bool
      */
     public function save(GenericObject $object): bool {
-        if($this->tableExists($this->CLASS_INSTANCE)) {
-            $insert = $object->getId() === null;
-
+        if($this->tableExists($this->getClassInstance())) {
             $query = $this->generateUpsertSql($object);
             $stmt = Database::getConnection()->prepare($query->getSql());
 
@@ -35,10 +39,6 @@ class GenericObjectDAO {
             }
 
             $stmt->execute();
-
-            if($insert) {
-                $object->id = Database::getConnection()->lastInsertId();
-            }
 
             return true;
         } else {
@@ -55,20 +55,16 @@ class GenericObjectDAO {
      */
     public function delete(GenericObject $object): bool {
         if($this->tableExists(get_class($object))) {
-            if($object->getId() !== null) {
-                $query = $this->generateDeleteSql($object);
-                $stmt = Database::getConnection()->prepare($query->getSql());
+            $query = $this->generateDeleteSql($object);
+            $stmt = Database::getConnection()->prepare($query->getSql());
 
-                foreach($query->getParameters() as $parameter => $value) {
-                    $this->bindValue($stmt, $parameter, $value);
-                }
-
-                $stmt->execute();
-
-                return true;
-            } else {
-                trigger_error("Trying to delete " . get_class($object) . ", but id is null", E_USER_WARNING);
+            foreach($query->getParameters() as $parameter => $value) {
+                $this->bindValue($stmt, $parameter, $value);
             }
+
+            $stmt->execute();
+
+            return true;
         } else {
             trigger_error("Trying to delete " . get_class($object) . ", but table does not exist", E_USER_WARNING);
         }
@@ -105,7 +101,7 @@ class GenericObjectDAO {
      * @return array
      */
     public function getObjects(array $filter = [], string $orderBy = "id", bool $orderAsc = true, int $limit = -1, int $offset = 0): array {
-        if($this->tableExists($this->CLASS_INSTANCE)) {
+        if($this->tableExists($this->getClassInstance())) {
             $query = $this->generateQuerySql($filter, $orderBy, $orderAsc, $limit, $offset);
             $stmt = Database::getConnection()->prepare($query->getSql());
 
@@ -117,14 +113,14 @@ class GenericObjectDAO {
 
             $objects = [];
             while($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $object = new $this->CLASS_INSTANCE();
+                $object = new ($this->getClassInstance())();
                 $object->fromArray($result);
                 $objects[] = $object;
             }
 
             return $objects;
         } else {
-            trigger_error("Trying to get " . $this->CLASS_INSTANCE . ", but table does not exist", E_USER_WARNING);
+            trigger_error("Trying to get " . $this->getClassInstance() . ", but table does not exist", E_USER_WARNING);
         }
 
         return [];
@@ -147,12 +143,16 @@ class GenericObjectDAO {
     /**
      * Binds a value to a parameter in a prepared statement
      * @param PDOStatement $statement
-     * @param string        $parameter
-     * @param mixed         $value
+     * @param string       $parameter
+     * @param mixed        $value
      * @return void
      */
     public function bindValue(PDOStatement $statement, string $parameter, mixed $value): void {
-        if($value instanceof DateTime || $value instanceof DateTimeImmutable) {
+        if($value instanceof GenericEntity) {
+            $statement->bindValue(":{$parameter}", $value->id, PDO::PARAM_INT);
+        } else if($value instanceof ORMEnum) {
+            $statement->bindValue(":{$parameter}", $value->value, PDO::PARAM_INT);
+        } else if($value instanceof DateTime || $value instanceof DateTimeImmutable) {
             $date = $value->format(DateTimeInterface::RFC3339_EXTENDED);
             $statement->bindValue(":{$parameter}", $date, PDO::PARAM_STR);
         } else if(is_bool($value)) {
@@ -166,50 +166,21 @@ class GenericObjectDAO {
         }
     }
 
-    public function generateUpsertSql(GenericObject $object): Query {
-        $objectProperties = get_object_vars($object);
-        $insert = $object->getId() === null;
+    public abstract function generateUpsertSql(GenericObject $object): Query;
 
-        $bindParameters = [];
-
-        $sql = ($insert ? "INSERT INTO " : "UPDATE ") . "`{$this->CLASS_INSTANCE}` SET ";
-        foreach($objectProperties as $property => $value) {
-            if(!$insert && ($property === "id" || $property === "created")) {
-                continue;
-            }
-
-            $sql .= "`{$property}` = :{$property}, ";
-            $bindParameters[$property] = $value;
-        }
-        $sql = substr($sql, 0, -2);
-        if(!$insert) {
-            $sql .= " WHERE `id` = :id";
-            $bindParameters["id"] = $object->getId();
-        }
-
-        return new Query($sql, $bindParameters);
-    }
-
-    public function generateDeleteSql(GenericObject $object): Query {
-        $sql = "DELETE FROM `{$this->CLASS_INSTANCE}` WHERE `id` = :id";
-        $bindParameters = [
-            "id" => $object->getId()
-        ];
-
-        return new Query($sql, $bindParameters);
-    }
+    public abstract function generateDeleteSql(GenericObject $object): Query;
 
     public function generateQuerySql(array $filter = [], string $orderBy = "id", bool $orderAsc = true, int $limit = -1, int $offset = 0): Query {
         $bindParameters = [];
 
         // Base search
-        $sql = "SELECT * FROM `" . $this->CLASS_INSTANCE . "`";
+        $sql = "SELECT * FROM `{$this->getClassInstance()}`";
 
         // Filter
         if(count($filter) > 0) {
             $sql .= " WHERE ";
             foreach($filter as $key => $value) {
-                if($value instanceof DAOFilter) {
+                if($value instanceof \struktal\ORM\DAOFilter) {
                     $sql .= $value->generateSqlTerm($key) . " AND ";
                     foreach($value->values($key) as $property => $propertyValue) {
                         $bindParameters[$property] = $propertyValue;

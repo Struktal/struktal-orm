@@ -4,130 +4,130 @@ include "src/database/Database.php";
 include "src/database/Query.php";
 include "src/DAOFilterOperator.php";
 include "src/DAOFilter.php";
-include "src/GenericObject.php";
-include "src/GenericObjectDAO.php";
+include "src/GenericEntity.php";
+include "src/GenericEntityDAO.php";
 
 use struktal\ORM\Database\Database;
 use struktal\ORM\Database\Query;
-use struktal\ORM\GenericObject;
-use struktal\ORM\GenericObjectDAO;
+use struktal\ORM\GenericEntity;
+use struktal\ORM\GenericEntityDAO;
 use struktal\ORM\DAOFilter;
 use struktal\ORM\DAOFilterOperator;
 
-class SimpleObject extends GenericObject {}
-class SimpleObjectDAO extends GenericObjectDAO {}
-$newSimpleObject = new SimpleObject();
-$existingSimpleObject = new SimpleObject();
-$existingSimpleObject->id = 1;
-$existingSimpleObject->created = new DateTimeImmutable("2000-01-01 00:00:00");
-$existingSimpleObject->updated = new DateTimeImmutable("2000-01-01 00:00:00");
+class SimpleEntity extends GenericEntity {}
+class SimpleEntityDAO extends GenericEntityDAO {}
+$newSimpleEntity = new SimpleEntity();
+$existingSimpleEntity = new SimpleEntity();
+$existingSimpleEntity->id = 1;
+$existingSimpleEntity->created = new DateTimeImmutable("2000-01-01 00:00:00");
+$existingSimpleEntity->updated = new DateTimeImmutable("2000-01-01 00:00:00");
 
-class ExtendedObject extends GenericObject {
+class ExtendedEntity extends GenericEntity {
     public string $name;
     public int $age;
 }
-class ExtendedObjectDAO extends GenericObjectDAO {}
-$newExtendedObject = new ExtendedObject();
-$newExtendedObject->name = "John Doe";
-$newExtendedObject->age = 30;
-$existingExtendedObject = new ExtendedObject();
-$existingExtendedObject->id = 2;
-$existingExtendedObject->created = new DateTimeImmutable("2000-01-01 00:00:00");
-$existingExtendedObject->updated = new DateTimeImmutable("2000-01-01 00:00:00");
-$existingExtendedObject->name = "Jane Doe";
-$existingExtendedObject->age = 25;
+class ExtendedEntityDAO extends GenericEntityDAO {}
+$newExtendedEntity = new ExtendedEntity();
+$newExtendedEntity->name = "John Doe";
+$newExtendedEntity->age = 30;
+$existingExtendedEntity = new ExtendedEntity();
+$existingExtendedEntity->id = 2;
+$existingExtendedEntity->created = new DateTimeImmutable("2000-01-01 00:00:00");
+$existingExtendedEntity->updated = new DateTimeImmutable("2000-01-01 00:00:00");
+$existingExtendedEntity->name = "Jane Doe";
+$existingExtendedEntity->age = 25;
 
-class ComplexObject extends GenericObject {
+class ComplexEntity extends GenericEntity {
     public string $name;
     public DateTimeImmutable $birthdate;
     public float $height;
     public bool $active;
 }
-class ComplexObjectDAO extends GenericObjectDAO {}
-$newComplexObject = new ComplexObject();
-$newComplexObject->name = "John Doe";
-$newComplexObject->birthdate = new DateTimeImmutable("2000-01-01 00:00:00");
-$newComplexObject->height = 1.75;
-$newComplexObject->active = true;
-$existingComplexObject = new ComplexObject();
-$existingComplexObject->id = 3;
-$existingComplexObject->created = new DateTimeImmutable("2000-01-01 00:00:00");
-$existingComplexObject->updated = new DateTimeImmutable("2000-01-01 00:00:00");
-$existingComplexObject->name = "Jane Doe";
-$existingComplexObject->birthdate = new DateTimeImmutable("2000-01-01 00:00:00");
-$existingComplexObject->height = 1.65;
-$existingComplexObject->active = false;
+class ComplexEntityDAO extends GenericEntityDAO {}
+$newComplexEntity = new ComplexEntity();
+$newComplexEntity->name = "John Doe";
+$newComplexEntity->birthdate = new DateTimeImmutable("2000-01-01 00:00:00");
+$newComplexEntity->height = 1.75;
+$newComplexEntity->active = true;
+$existingComplexEntity = new ComplexEntity();
+$existingComplexEntity->id = 3;
+$existingComplexEntity->created = new DateTimeImmutable("2000-01-01 00:00:00");
+$existingComplexEntity->updated = new DateTimeImmutable("2000-01-01 00:00:00");
+$existingComplexEntity->name = "Jane Doe";
+$existingComplexEntity->birthdate = new DateTimeImmutable("2000-01-01 00:00:00");
+$existingComplexEntity->height = 1.65;
+$existingComplexEntity->active = false;
 
 dataset("upsert", [
     "simpleInsert" => [
-        $existingSimpleObject,
+        $existingSimpleEntity,
         new Query(
-            "UPDATE `SimpleObject` SET `updated` = :updated WHERE `id` = :id",
+            "UPDATE `SimpleEntity` SET `updated` = :updated WHERE `id` = :id",
             [
-                "updated" => $existingSimpleObject->updated,
-                "id" => $existingSimpleObject->id
+                "updated" => $existingSimpleEntity->updated,
+                "id" => $existingSimpleEntity->id
             ]
         )
     ],
     "simpleUpdate" => [
-        $existingSimpleObject,
+        $existingSimpleEntity,
         new Query(
-            "UPDATE `SimpleObject` SET `updated` = :updated WHERE `id` = :id",
+            "UPDATE `SimpleEntity` SET `updated` = :updated WHERE `id` = :id",
             [
-                "updated" => $existingSimpleObject->updated,
-                "id" => $existingSimpleObject->id
+                "updated" => $existingSimpleEntity->updated,
+                "id" => $existingSimpleEntity->id
             ]
         )
     ],
     "extendedInsert" => [
-        $existingExtendedObject,
+        $existingExtendedEntity,
         new Query(
-            "UPDATE `ExtendedObject` SET `updated` = :updated, `name` = :name, `age` = :age WHERE `id` = :id",
+            "UPDATE `ExtendedEntity` SET `updated` = :updated, `name` = :name, `age` = :age WHERE `id` = :id",
             [
-                "updated" => $existingExtendedObject->updated,
-                "name" => $existingExtendedObject->name,
-                "age" => $existingExtendedObject->age,
-                "id" => $existingExtendedObject->id
+                "updated" => $existingExtendedEntity->updated,
+                "name" => $existingExtendedEntity->name,
+                "age" => $existingExtendedEntity->age,
+                "id" => $existingExtendedEntity->id
             ]
         )
     ],
     "extendedUpdate" => [
-        $existingExtendedObject,
+        $existingExtendedEntity,
         new Query(
-            "UPDATE `ExtendedObject` SET `updated` = :updated, `name` = :name, `age` = :age WHERE `id` = :id",
+            "UPDATE `ExtendedEntity` SET `updated` = :updated, `name` = :name, `age` = :age WHERE `id` = :id",
             [
-                "updated" => $existingExtendedObject->updated,
-                "name" => $existingExtendedObject->name,
-                "age" => $existingExtendedObject->age,
-                "id" => $existingExtendedObject->id
+                "updated" => $existingExtendedEntity->updated,
+                "name" => $existingExtendedEntity->name,
+                "age" => $existingExtendedEntity->age,
+                "id" => $existingExtendedEntity->id
             ]
         )
     ],
     "complexInsert" => [
-        $existingComplexObject,
+        $existingComplexEntity,
         new Query(
-            "UPDATE `ComplexObject` SET `updated` = :updated, `name` = :name, `birthdate` = :birthdate, `height` = :height, `active` = :active WHERE `id` = :id",
+            "UPDATE `ComplexEntity` SET `updated` = :updated, `name` = :name, `birthdate` = :birthdate, `height` = :height, `active` = :active WHERE `id` = :id",
             [
-                "updated" => $existingComplexObject->updated,
-                "name" => $existingComplexObject->name,
-                "birthdate" => $existingComplexObject->birthdate,
-                "height" => $existingComplexObject->height,
-                "active" => $existingComplexObject->active,
-                "id" => $existingComplexObject->id
+                "updated" => $existingComplexEntity->updated,
+                "name" => $existingComplexEntity->name,
+                "birthdate" => $existingComplexEntity->birthdate,
+                "height" => $existingComplexEntity->height,
+                "active" => $existingComplexEntity->active,
+                "id" => $existingComplexEntity->id
             ]
         )
     ],
     "complexUpdate" => [
-        $existingComplexObject,
+        $existingComplexEntity,
         new Query(
-            "UPDATE `ComplexObject` SET `updated` = :updated, `name` = :name, `birthdate` = :birthdate, `height` = :height, `active` = :active WHERE `id` = :id",
+            "UPDATE `ComplexEntity` SET `updated` = :updated, `name` = :name, `birthdate` = :birthdate, `height` = :height, `active` = :active WHERE `id` = :id",
             [
-                "updated" => $existingComplexObject->updated,
-                "name" => $existingComplexObject->name,
-                "birthdate" => $existingComplexObject->birthdate,
-                "height" => $existingComplexObject->height,
-                "active" => $existingComplexObject->active,
-                "id" => $existingComplexObject->id
+                "updated" => $existingComplexEntity->updated,
+                "name" => $existingComplexEntity->name,
+                "birthdate" => $existingComplexEntity->birthdate,
+                "height" => $existingComplexEntity->height,
+                "active" => $existingComplexEntity->active,
+                "id" => $existingComplexEntity->id
             ]
         )
     ]
@@ -135,29 +135,29 @@ dataset("upsert", [
 
 dataset("delete", [
     "simpleDelete" => [
-        $existingSimpleObject,
+        $existingSimpleEntity,
         new Query(
-            "DELETE FROM `SimpleObject` WHERE `id` = :id",
+            "DELETE FROM `SimpleEntity` WHERE `id` = :id",
             [
-                "id" => $existingSimpleObject->id
+                "id" => $existingSimpleEntity->id
             ]
         )
     ],
     "extendedDelete" => [
-        $existingExtendedObject,
+        $existingExtendedEntity,
         new Query(
-            "DELETE FROM `ExtendedObject` WHERE `id` = :id",
+            "DELETE FROM `ExtendedEntity` WHERE `id` = :id",
             [
-                "id" => $existingExtendedObject->id
+                "id" => $existingExtendedEntity->id
             ]
         )
     ],
     "complexDelete" => [
-        $existingComplexObject,
+        $existingComplexEntity,
         new Query(
-            "DELETE FROM `ComplexObject` WHERE `id` = :id",
+            "DELETE FROM `ComplexEntity` WHERE `id` = :id",
             [
-                "id" => $existingComplexObject->id
+                "id" => $existingComplexEntity->id
             ]
         )
     ]
@@ -165,221 +165,221 @@ dataset("delete", [
 
 dataset("select", [
     "simpleGetAll" => [
-        SimpleObject::class,
+        SimpleEntity::class,
         [],
         new Query(
-            "SELECT * FROM `SimpleObject` ORDER BY `id` ASC",
+            "SELECT * FROM `SimpleEntity` ORDER BY `id` ASC",
             []
         )
     ],
     "complexGetAll" => [
-        ComplexObject::class,
+        ComplexEntity::class,
         [],
         new Query(
-            "SELECT * FROM `ComplexObject` ORDER BY `id` ASC",
+            "SELECT * FROM `ComplexEntity` ORDER BY `id` ASC",
             []
         )
     ],
     "simpleGetWithSimpleFilter" => [
-        SimpleObject::class,
+        SimpleEntity::class,
         [
             "filter" => [
-                "id" => $existingSimpleObject->getId()
+                "id" => $existingSimpleEntity->getId()
             ]
         ],
         new Query(
-            "SELECT * FROM `SimpleObject` WHERE `id` = :id ORDER BY `id` ASC",
+            "SELECT * FROM `SimpleEntity` WHERE `id` = :id ORDER BY `id` ASC",
             [
-                "id" => $existingSimpleObject->getId()
+                "id" => $existingSimpleEntity->getId()
             ]
         )
     ],
     "complexGetWithSimpleFilterAndOrder" => [
-        ComplexObject::class,
+        ComplexEntity::class,
         [
             "filter" => [
-                "id" => $existingComplexObject->getId()
+                "id" => $existingComplexEntity->getId()
             ],
             "orderBy" => "name",
             "orderAsc" => false
         ],
         new Query(
-            "SELECT * FROM `ComplexObject` WHERE `id` = :id ORDER BY `name` DESC",
+            "SELECT * FROM `ComplexEntity` WHERE `id` = :id ORDER BY `name` DESC",
             [
-                "id" => $existingComplexObject->getId()
+                "id" => $existingComplexEntity->getId()
             ]
         )
     ],
     "complexGetWithSimpleFilterAndLimit" => [
-        ComplexObject::class,
+        ComplexEntity::class,
         [
             "filter" => [
-                "id" => $existingComplexObject->getId()
+                "id" => $existingComplexEntity->getId()
             ],
             "limit" => 1
         ],
         new Query(
-            "SELECT * FROM `ComplexObject` WHERE `id` = :id ORDER BY `id` ASC LIMIT 1 OFFSET 0",
+            "SELECT * FROM `ComplexEntity` WHERE `id` = :id ORDER BY `id` ASC LIMIT 1 OFFSET 0",
             [
-                "id" => $existingComplexObject->getId()
+                "id" => $existingComplexEntity->getId()
             ]
         )
     ],
     "complexGetWithComplexFilter" => [
-        ComplexObject::class,
+        ComplexEntity::class,
         [
             "filter" => [
                 new DAOFilter(
                     DAOFilterOperator::NOT_EQUALS,
                     "name",
-                    $existingComplexObject->name
+                    $existingComplexEntity->name
                 ),
                 new DAOFilter(
                     DAOFilterOperator::GREATER_THAN,
                     "height",
-                    $existingComplexObject->height
+                    $existingComplexEntity->height
                 )
             ]
         ],
         new Query(
-            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `height` > :1 ORDER BY `id` ASC",
+            "SELECT * FROM `ComplexEntity` WHERE `name` != :0 AND `height` > :1 ORDER BY `id` ASC",
             [
-                0 => $existingComplexObject->name,
-                1 => $existingComplexObject->height
+                0 => $existingComplexEntity->name,
+                1 => $existingComplexEntity->height
             ]
         )
     ],
     "complexGetWithComplexFilterAndOrder" => [
-        ComplexObject::class,
+        ComplexEntity::class,
         [
             "filter" => [
                 new DAOFilter(
                     DAOFilterOperator::NOT_EQUALS,
                     "name",
-                    $existingComplexObject->name
+                    $existingComplexEntity->name
                 ),
                 new DAOFilter(
                     DAOFilterOperator::GREATER_THAN,
                     "height",
-                    $existingComplexObject->height
+                    $existingComplexEntity->height
                 )
             ],
             "orderBy" => "birthdate",
             "orderAsc" => true
         ],
         new Query(
-            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `height` > :1 ORDER BY `birthdate` ASC",
+            "SELECT * FROM `ComplexEntity` WHERE `name` != :0 AND `height` > :1 ORDER BY `birthdate` ASC",
             [
-                0 => $existingComplexObject->name,
-                1 => $existingComplexObject->height
+                0 => $existingComplexEntity->name,
+                1 => $existingComplexEntity->height
             ]
         )
     ],
     "complexGetWithComplexFilterAndLimit" => [
-        ComplexObject::class,
+        ComplexEntity::class,
         [
             "filter" => [
                 new DAOFilter(
                     DAOFilterOperator::NOT_EQUALS,
                     "name",
-                    $existingComplexObject->name
+                    $existingComplexEntity->name
                 ),
                 new DAOFilter(
                     DAOFilterOperator::GREATER_THAN,
                     "height",
-                    $existingComplexObject->height
+                    $existingComplexEntity->height
                 )
             ],
             "limit" => 5,
             "offset" => 10
         ],
         new Query(
-            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `height` > :1 ORDER BY `id` ASC LIMIT 5 OFFSET 10",
+            "SELECT * FROM `ComplexEntity` WHERE `name` != :0 AND `height` > :1 ORDER BY `id` ASC LIMIT 5 OFFSET 10",
             [
-                0 => $existingComplexObject->name,
-                1 => $existingComplexObject->height
+                0 => $existingComplexEntity->name,
+                1 => $existingComplexEntity->height
             ]
         )
     ],
     "complexGetWithMixedFilter" => [
-        ComplexObject::class,
+        ComplexEntity::class,
         [
             "filter" => [
                 new DAOFilter(
                     DAOFilterOperator::NOT_EQUALS,
                     "name",
-                    $existingComplexObject->name
+                    $existingComplexEntity->name
                 ),
                 new DAOFilter(
                     DAOFilterOperator::GREATER_THAN,
                     "height",
-                    $existingComplexObject->height
+                    $existingComplexEntity->height
                 ),
                 "active" => true
             ]
         ],
         new Query(
-            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `height` > :1 AND `active` = :active ORDER BY `id` ASC",
+            "SELECT * FROM `ComplexEntity` WHERE `name` != :0 AND `height` > :1 AND `active` = :active ORDER BY `id` ASC",
             [
-                0 => $existingComplexObject->name,
-                1 => $existingComplexObject->height,
+                0 => $existingComplexEntity->name,
+                1 => $existingComplexEntity->height,
                 "active" => true
             ]
         )
     ],
     "complexGetWithMixedFilterAndOrder" => [
-        ComplexObject::class,
+        ComplexEntity::class,
         [
             "filter" => [
                 new DAOFilter(
                     DAOFilterOperator::NOT_EQUALS,
                     "name",
-                    $existingComplexObject->name
+                    $existingComplexEntity->name
                 ),
                 "active" => true,
                 new DAOFilter(
                     DAOFilterOperator::GREATER_THAN,
                     "height",
-                    $existingComplexObject->height
+                    $existingComplexEntity->height
                 )
             ],
             "orderBy" => "birthdate",
             "orderAsc" => false
         ],
         new Query(
-            "SELECT * FROM `ComplexObject` WHERE `name` != :0 AND `active` = :active AND `height` > :1 ORDER BY `birthdate` DESC",
+            "SELECT * FROM `ComplexEntity` WHERE `name` != :0 AND `active` = :active AND `height` > :1 ORDER BY `birthdate` DESC",
             [
-                0 => $existingComplexObject->name,
+                0 => $existingComplexEntity->name,
                 "active" => true,
-                1 => $existingComplexObject->height
+                1 => $existingComplexEntity->height
             ]
         )
     ],
     "complexGetWithMixedFilterAndLimit" => [
-        ComplexObject::class,
+        ComplexEntity::class,
         [
             "filter" => [
                 "active" => true,
                 new DAOFilter(
                     DAOFilterOperator::NOT_EQUALS,
                     "name",
-                    $existingComplexObject->name
+                    $existingComplexEntity->name
                 ),
                 new DAOFilter(
                     DAOFilterOperator::GREATER_THAN,
                     "height",
-                    $existingComplexObject->height
+                    $existingComplexEntity->height
                 )
             ],
             "limit" => 3,
             "offset" => 1
         ],
         new Query(
-            "SELECT * FROM `ComplexObject` WHERE `active` = :active AND `name` != :0 AND `height` > :1 ORDER BY `id` ASC LIMIT 3 OFFSET 1",
+            "SELECT * FROM `ComplexEntity` WHERE `active` = :active AND `name` != :0 AND `height` > :1 ORDER BY `id` ASC LIMIT 3 OFFSET 1",
             [
                 "active" => true,
-                0 => $existingComplexObject->name,
-                1 => $existingComplexObject->height
+                0 => $existingComplexEntity->name,
+                1 => $existingComplexEntity->height
             ]
         )
     ]

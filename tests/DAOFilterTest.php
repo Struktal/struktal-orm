@@ -2,8 +2,8 @@
 
 use struktal\ORM\Database\Database;
 use struktal\ORM\Database\Query;
-use struktal\ORM\GenericObject;
-use struktal\ORM\GenericObjectDAO;
+use struktal\ORM\GenericEntity;
+use struktal\ORM\GenericEntityDAO;
 use struktal\ORM\DAOFilter;
 use struktal\ORM\DAOFilterOperator;
 
