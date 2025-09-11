@@ -1,11 +1,6 @@
 <?php
 
-include "src/database/Database.php";
-include "src/database/Query.php";
-include "src/DAOFilterOperator.php";
-include "src/DAOFilter.php";
-include "src/GenericEntity.php";
-include "src/GenericEntityDAO.php";
+require_once(__DIR__ . "/../vendor/autoload.php");
 
 use struktal\ORM\Database\Database;
 use struktal\ORM\Database\Query;
