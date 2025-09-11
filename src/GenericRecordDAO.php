@@ -2,34 +2,41 @@
 
 namespace struktal\ORM;
 
-use struktal\ORM\Database\Database;
 use struktal\ORM\Database\Query;
 use struktal\ORM\internal\GenericObject;
 use struktal\ORM\internal\GenericObjectDAO;
 
-abstract class GenericEntityDAO extends GenericObjectDAO {
+abstract class GenericRecordDAO extends GenericObjectDAO {
+    public function get(mixed $key): mixed {
+        $record = $this->getObject([
+            "key" => $key
+        ]);
+        if($record instanceof GenericRecord) {
+            return $record->value;
+        }
+
+        return null;
+    }
+
+    public function set(mixed $key, mixed $value): bool {
+        $record = new ($this->getClassInstance())();
+        $record->key = $key;
+        $record->value = $value;
+
+        return $this->save($record);
+    }
+
     /**
      * Saves an object with its current attributes to the database
      * @param GenericObject $object
      * @return bool
      */
     public function save(GenericObject $object): bool {
-        if(!$object instanceof GenericEntity) {
+        if(!$object instanceof GenericRecord) {
             return false;
         }
 
-        $insert = $object->id === null;
-
-        $success = parent::save($object);
-        if(!$success) {
-            return false;
-        }
-
-        if($insert) {
-            $object->id = Database::getConnection()->lastInsertId();
-        }
-
-        return true;
+        return parent::save($object);
     }
 
     /**
@@ -38,12 +45,7 @@ abstract class GenericEntityDAO extends GenericObjectDAO {
      * @return bool
      */
     public function delete(GenericObject $object): bool {
-        if(!$object instanceof GenericEntity) {
-            return false;
-        }
-
-        if($object->id === null) {
-            trigger_error("Trying to delete " . get_class($object) . ", but id is null", E_USER_WARNING);
+        if(!$object instanceof GenericRecord) {
             return false;
         }
 
@@ -51,18 +53,21 @@ abstract class GenericEntityDAO extends GenericObjectDAO {
     }
 
     public function generateUpsertSql(GenericObject $object): Query {
-        if(!$object instanceof GenericEntity) {
-            throw new \InvalidArgumentException("Object must be an instance of GenericEntity");
+        if(!$object instanceof GenericRecord) {
+            throw new \InvalidArgumentException("Object must be an instance of GenericRecord");
         }
 
         $objectProperties = get_object_vars($object);
-        $insert = $object->id === null;
+        $existingRecord = $this->getObject([
+            "key" => $object->key
+        ]);
+        $insert = !$existingRecord instanceof GenericRecord;
 
         $bindParameters = [];
 
         $sql = ($insert ? "INSERT INTO " : "UPDATE ") . "`{$this->getClassInstance()}` SET ";
         foreach($objectProperties as $property => $value) {
-            if(!$insert && ($property === "id" || $property === "created")) {
+            if(!$insert && ($property === "key")) {
                 continue;
             }
 
@@ -71,21 +76,21 @@ abstract class GenericEntityDAO extends GenericObjectDAO {
         }
         $sql = substr($sql, 0, -2);
         if(!$insert) {
-            $sql .= " WHERE `id` = :id";
-            $bindParameters["id"] = $object->id;
+            $sql .= " WHERE `key` = :key";
+            $bindParameters["key"] = $object->key;
         }
 
         return new Query($sql, $bindParameters);
     }
 
     public function generateDeleteSql(GenericObject $object): Query {
-        if(!$object instanceof GenericEntity) {
-            throw new \InvalidArgumentException("Object must be an instance of GenericEntity");
+        if(!$object instanceof GenericRecord) {
+            throw new \InvalidArgumentException("Object must be an instance of GenericRecord");
         }
 
-        $sql = "DELETE FROM `{$this->getClassInstance()}` WHERE `id` = :id";
+        $sql = "DELETE FROM `{$this->getClassInstance()}` WHERE `key` = :key";
         $bindParameters = [
-            "id" => $object->id
+            "id" => $object->key
         ];
 
         return new Query($sql, $bindParameters);

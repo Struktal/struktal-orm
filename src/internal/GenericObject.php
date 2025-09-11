@@ -8,7 +8,7 @@ use \ReflectionClass;
 use \ReflectionProperty;
 use \ReflectionNamedType;
 
-class GenericObject {
+abstract class GenericObject {
     private static array $dao = [];
 
     /**

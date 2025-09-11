@@ -2,15 +2,9 @@
 
 namespace struktal\ORM;
 
-use \DateTime;
 use \DateTimeImmutable;
-use \ReflectionClass;
-use \ReflectionProperty;
-use \ReflectionNamedType;
 
-class GenericEntity extends internal\GenericObject {
-    private static array $dao = [];
-
+abstract class GenericEntity extends internal\GenericObject {
     public ?int $id;
     public DateTimeImmutable $created;
     public DateTimeImmutable $updated;
