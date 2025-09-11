@@ -18,10 +18,6 @@ class GenericObjectDAO {
         $this->CLASS_INSTANCE = $CLASS_INSTANCE;
     }
 
-    public function getObjectName(): string {
-        return $this->CLASS_INSTANCE;
-    }
-
     /**
      * Saves an object with its current attributes to the database
      * @param GenericObject $object
@@ -59,7 +55,6 @@ class GenericObjectDAO {
      */
     public function delete(GenericObject $object): bool {
         if($this->tableExists(get_class($object))) {
-            $tableName = get_class($object);
             if($object->getId() !== null) {
                 $query = $this->generateDeleteSql($object);
                 $stmt = Database::getConnection()->prepare($query->getSql());
@@ -142,6 +137,7 @@ class GenericObjectDAO {
      */
     public function tableExists(string $tableName): bool {
         $stmt = Database::getConnection()->prepare("SHOW TABLES LIKE :tableName");
+        $tableName = str_replace("\\", "\\\\", $tableName); // Escape backslashes from namespaced class names
         $stmt->bindValue(":tableName", $tableName);
         $stmt->execute();
 
