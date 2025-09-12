@@ -12,7 +12,7 @@ abstract class GenericRecordDAO extends GenericObjectDAO {
             "key" => $key
         ]);
         if($record instanceof GenericRecord) {
-            return $record->value;
+            return $record->getValue();
         }
 
         return null;
@@ -20,8 +20,8 @@ abstract class GenericRecordDAO extends GenericObjectDAO {
 
     public function set(mixed $key, mixed $value): bool {
         $record = new ($this->getClassInstance())();
-        $record->key = $key;
-        $record->value = $value;
+        $record->setKey($key);
+        $record->setValue($value);
 
         return $this->save($record);
     }
@@ -59,7 +59,7 @@ abstract class GenericRecordDAO extends GenericObjectDAO {
 
         $objectProperties = get_object_vars($object);
         $existingRecord = $this->getObject([
-            "key" => $object->key
+            "key" => $object->getKey()
         ]);
         $insert = !$existingRecord instanceof GenericRecord;
 
@@ -77,7 +77,7 @@ abstract class GenericRecordDAO extends GenericObjectDAO {
         $sql = substr($sql, 0, -2);
         if(!$insert) {
             $sql .= " WHERE `key` = :key";
-            $bindParameters["key"] = $object->key;
+            $bindParameters["key"] = $object->getKey();
         }
 
         return new Query($sql, $bindParameters);
@@ -90,7 +90,7 @@ abstract class GenericRecordDAO extends GenericObjectDAO {
 
         $sql = "DELETE FROM `{$this->getClassInstance()}` WHERE `key` = :key";
         $bindParameters = [
-            "id" => $object->key
+            "id" => $object->getKey()
         ];
 
         return new Query($sql, $bindParameters);

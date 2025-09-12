@@ -179,13 +179,13 @@ dataset("select", [
         SimpleEntity::class,
         [
             "filter" => [
-                "id" => $existingSimpleEntity->getId()
+                "id" => $existingSimpleEntity->id
             ]
         ],
         new Query(
             "SELECT * FROM `SimpleEntity` WHERE `id` = :id ORDER BY `id` ASC",
             [
-                "id" => $existingSimpleEntity->getId()
+                "id" => $existingSimpleEntity->id
             ]
         )
     ],
@@ -193,7 +193,7 @@ dataset("select", [
         ComplexEntity::class,
         [
             "filter" => [
-                "id" => $existingComplexEntity->getId()
+                "id" => $existingComplexEntity->id
             ],
             "orderBy" => "name",
             "orderAsc" => false
@@ -201,7 +201,7 @@ dataset("select", [
         new Query(
             "SELECT * FROM `ComplexEntity` WHERE `id` = :id ORDER BY `name` DESC",
             [
-                "id" => $existingComplexEntity->getId()
+                "id" => $existingComplexEntity->id
             ]
         )
     ],
@@ -209,14 +209,14 @@ dataset("select", [
         ComplexEntity::class,
         [
             "filter" => [
-                "id" => $existingComplexEntity->getId()
+                "id" => $existingComplexEntity->id
             ],
             "limit" => 1
         ],
         new Query(
             "SELECT * FROM `ComplexEntity` WHERE `id` = :id ORDER BY `id` ASC LIMIT 1 OFFSET 0",
             [
-                "id" => $existingComplexEntity->getId()
+                "id" => $existingComplexEntity->id
             ]
         )
     ],
