@@ -2,13 +2,13 @@
 
 namespace struktal\ORM\internal;
 
+use struktal\DatabaseObjects\InheritedType;
+use struktal\ORM\ORMEnum;
 use \DateTime;
 use \DateTimeImmutable;
 use \ReflectionClass;
 use \ReflectionProperty;
 use \ReflectionNamedType;
-use struktal\DatabaseObjects\ORMEnumObject;
-use struktal\ORM\ORMEnum;
 
 abstract class GenericObject {
     private static array $dao = [];
@@ -62,8 +62,26 @@ abstract class GenericObject {
                 } else if(!$propertyType->isBuiltin()) {
                     try {
                         $propertyReflection = new ReflectionClass($propertyType->getName());
+                        $propertyClassName = $propertyType->getName();
+
+                        $propertyAttributes = $propertyReflection->getAttributes();
+                        foreach($propertyAttributes as $attribute) {
+                            if($attribute->getName() === InheritedType::class) {
+                                if(count($attribute->getArguments()) > 0) {
+                                    $inheritedTypeClass = $attribute->getArguments()[0];
+                                    if(class_exists($inheritedTypeClass) && is_subclass_of($inheritedTypeClass, $propertyClassName)) {
+                                        $propertyClassName = $inheritedTypeClass;
+                                    } else {
+                                        trigger_error("Inherited type class \"" . $inheritedTypeClass . "\" does not exist or is not a subclass of \"" . $propertyClassName . "\"", E_USER_WARNING);
+                                    }
+                                } else {
+                                    trigger_error("InheritedType attribute on property \"" . $propertyName . "\" does not have a class argument", E_USER_WARNING);
+                                }
+                            }
+                        }
+
                         if($propertyReflection->isSubclassOf(GenericObject::class)) {
-                            $dao = call_user_func([$propertyType->getName(), "dao"]);
+                            $dao = call_user_func([$propertyClassName, "dao"]);
 
                             $object = $dao->getObject([
                                 "id" => $data[$propertyName]
@@ -71,11 +89,8 @@ abstract class GenericObject {
 
                             $this->$propertyName = $object;
                             continue;
-                        } else if($propertyReflection->isSubclassOf(ORMEnumObject::class)) {
-                            $this->$propertyName = call_user_func([$propertyType->getName(), "tryFrom"], $data[$propertyName]);
-                            continue;
                         } else if($propertyReflection->isEnum() && $propertyReflection->implementsInterface(ORMEnum::class)) {
-                            $this->$propertyName = call_user_func([$propertyType->getName(), "tryFrom"], $data[$propertyName]);
+                            $this->$propertyName = call_user_func([$propertyClassName, "tryFrom"], $data[$propertyName]);
                             continue;
                         }
                     } catch(\ReflectionException $e) {
