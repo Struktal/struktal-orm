@@ -7,6 +7,8 @@ use \DateTimeImmutable;
 use \ReflectionClass;
 use \ReflectionProperty;
 use \ReflectionNamedType;
+use struktal\DatabaseObjects\ORMEnumObject;
+use struktal\ORM\ORMEnum;
 
 abstract class GenericObject {
     private static array $dao = [];
@@ -68,6 +70,9 @@ abstract class GenericObject {
                             ]);
 
                             $this->$propertyName = $object;
+                            continue;
+                        } else if($propertyReflection->isSubclassOf(ORMEnumObject::class)) {
+                            $this->$propertyName = call_user_func([$propertyType->getName(), "tryFrom"], $data[$propertyName]);
                             continue;
                         } else if($propertyReflection->isEnum() && $propertyReflection->implementsInterface(ORMEnum::class)) {
                             $this->$propertyName = call_user_func([$propertyType->getName(), "tryFrom"], $data[$propertyName]);

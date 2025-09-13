@@ -2,6 +2,7 @@
 
 namespace struktal\ORM\internal;
 
+use struktal\DatabaseObjects\ORMEnumObject;
 use struktal\ORM\Database\Database;
 use struktal\ORM\Database\Query;
 use struktal\ORM\GenericEntity;
@@ -150,6 +151,8 @@ abstract class GenericObjectDAO {
     public function bindValue(PDOStatement $statement, string $parameter, mixed $value): void {
         if($value instanceof GenericEntity) {
             $statement->bindValue(":{$parameter}", $value->id, PDO::PARAM_INT);
+        } else if($value instanceof ORMEnumObject) {
+            $statement->bindValue(":{$parameter}", $value->value, PDO::PARAM_INT);
         } else if($value instanceof ORMEnum) {
             $statement->bindValue(":{$parameter}", $value->value, PDO::PARAM_INT);
         } else if($value instanceof DateTime || $value instanceof DateTimeImmutable) {
