@@ -2,7 +2,7 @@
 
 namespace struktal\ORM\internal;
 
-use struktal\DatabaseObjects\InheritedType;
+use struktal\ORM\InheritedType;
 use struktal\ORM\ORMEnum;
 use \DateTime;
 use \DateTimeImmutable;
@@ -61,10 +61,9 @@ abstract class GenericObject {
                     continue;
                 } else if(!$propertyType->isBuiltin()) {
                     try {
-                        $propertyReflection = new ReflectionClass($propertyType->getName());
                         $propertyClassName = $propertyType->getName();
 
-                        $propertyAttributes = $propertyReflection->getAttributes();
+                        $propertyAttributes = $property->getAttributes();
                         foreach($propertyAttributes as $attribute) {
                             if($attribute->getName() === InheritedType::class) {
                                 if(count($attribute->getArguments()) > 0) {
@@ -80,6 +79,7 @@ abstract class GenericObject {
                             }
                         }
 
+                        $propertyReflection = new ReflectionClass($propertyClassName);
                         if($propertyReflection->isSubclassOf(GenericObject::class)) {
                             $dao = call_user_func([$propertyClassName, "dao"]);
 

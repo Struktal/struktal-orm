@@ -9,6 +9,12 @@ abstract class GenericEntity extends internal\GenericObject {
     public DateTimeImmutable $created;
     public DateTimeImmutable $updated;
 
+    public function __construct() {
+        $this->id = null;
+        $this->created = new DateTimeImmutable();
+        $this->updated = new DateTimeImmutable();
+    }
+
     /**
      * Returns the object's ID
      * @return int|null
