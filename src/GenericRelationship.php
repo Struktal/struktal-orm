@@ -3,9 +3,9 @@
 namespace struktal\ORM;
 
 abstract class GenericRelationship extends internal\GenericObject {
-    private static RelationshipType $relationshipType = RelationshipType::ONE_TO_ONE;
+    protected static RelationshipType $relationshipType = RelationshipType::ONE_TO_ONE;
     public static function getRelationshipType(): RelationshipType {
-        return self::$relationshipType;
+        return static::$relationshipType;
     }
 
     public abstract function getProducer(): GenericEntity;
