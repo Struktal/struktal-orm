@@ -2,10 +2,10 @@
 
 namespace struktal\ORM\internal;
 
-use struktal\DatabaseObjects\ORMEnumObject;
 use struktal\ORM\Database\Database;
 use struktal\ORM\Database\Query;
 use struktal\ORM\GenericEntity;
+use struktal\ORM\GenericEntityDAO;
 use struktal\ORM\ORMEnum;
 use \PDO;
 use \PDOStatement;
@@ -82,7 +82,7 @@ abstract class GenericObjectDAO {
      * @param int    $offset
      * @return GenericObject|null
      */
-    public function getObject(array $filter, string $orderBy = "id", bool $orderAsc = true, int $offset = 0): ?GenericObject {
+    public function getObject(array $filter, ?string $orderBy = null, bool $orderAsc = true, int $offset = 0): ?GenericObject {
         $objects = $this->getObjects($filter, $orderBy, $orderAsc, 1, $offset);
         if(count($objects) > 0) {
             return $objects[0];
@@ -101,7 +101,7 @@ abstract class GenericObjectDAO {
      * @param int    $offset
      * @return array
      */
-    public function getObjects(array $filter = [], string $orderBy = "id", bool $orderAsc = true, int $limit = -1, int $offset = 0): array {
+    public function getObjects(array $filter = [], ?string $orderBy = null, bool $orderAsc = true, int $limit = -1, int $offset = 0): array {
         if($this->tableExists($this->getClassInstance())) {
             $query = $this->generateQuerySql($filter, $orderBy, $orderAsc, $limit, $offset);
             $stmt = Database::getConnection()->prepare($query->getSql());
@@ -151,8 +151,6 @@ abstract class GenericObjectDAO {
     public function bindValue(PDOStatement $statement, string $parameter, mixed $value): void {
         if($value instanceof GenericEntity) {
             $statement->bindValue(":{$parameter}", $value->id, PDO::PARAM_INT);
-        } else if($value instanceof ORMEnumObject) {
-            $statement->bindValue(":{$parameter}", $value->value, PDO::PARAM_INT);
         } else if($value instanceof ORMEnum) {
             $statement->bindValue(":{$parameter}", $value->value, PDO::PARAM_INT);
         } else if($value instanceof DateTime || $value instanceof DateTimeImmutable) {
@@ -173,7 +171,14 @@ abstract class GenericObjectDAO {
 
     public abstract function generateDeleteSql(GenericObject $object): Query;
 
-    public function generateQuerySql(array $filter = [], string $orderBy = "id", bool $orderAsc = true, int $limit = -1, int $offset = 0): Query {
+    public function generateQuerySql(array $filter = [], ?string $orderBy = null, bool $orderAsc = true, int $limit = -1, int $offset = 0): Query {
+        // Order by id by default for entities
+        if($orderBy === null) {
+            if($this instanceof GenericEntityDAO) {
+                $orderBy = "id";
+            }
+        }
+
         $bindParameters = [];
 
         // Base search
@@ -201,8 +206,10 @@ abstract class GenericObjectDAO {
         }
 
         // Order
-        $strippedOrderBy = strip_tags($orderBy);
-        $sql .= " ORDER BY `{$strippedOrderBy}` " . ($orderAsc ? "ASC" : "DESC");
+        if($orderBy !== null) {
+            $strippedOrderBy = strip_tags($orderBy);
+            $sql .= " ORDER BY `{$strippedOrderBy}` " . ($orderAsc ? "ASC" : "DESC");
+        }
 
         // Limit and offset
         if($limit >= 0) {
