@@ -17,6 +17,9 @@ class SchemaEvolutionService {
         }
 
         $files = scandir($schemaEvolutionsDirectory);
+        usort($files, function(string $a, string $b) {
+            return strcmp($a, $b);
+        });
         foreach($files as $file) {
             if(!str_ends_with($file, ".sql")) {
                 continue;
