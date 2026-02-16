@@ -17,6 +17,10 @@ class SchemaEvolutionService {
         }
 
         $files = scandir($schemaEvolutionsDirectory);
+        if(!$files) {
+            trigger_error("Failed to read schema evolutions directory: " . $schemaEvolutionsDirectory, E_USER_WARNING);
+            return;
+        }
         usort($files, function(string $a, string $b) {
             return strcmp($a, $b);
         });
