@@ -1,6 +1,6 @@
 <?php
 
-namespace struktal\ORM\schema;
+namespace struktal\ORM\Schema;
 
 class SchemaEvolutionService {
     /**
@@ -101,7 +101,7 @@ class SchemaEvolutionService {
      * @return void
      */
     private static function createSchemaEvolutionTable(): void {
-        $sql = "CREATE TABLE IF NOT EXISTS `struktal\ORM\schema\SchemaEvolution` (
+        $sql = "CREATE TABLE IF NOT EXISTS `struktal\\ORM\\Schema\\SchemaEvolution` (
                     `id` INT NOT NULL AUTO_INCREMENT,
                     `evolution` VARCHAR(256) NOT NULL UNIQUE,
                     `executed` DATETIME(3) NULL,
@@ -111,7 +111,18 @@ class SchemaEvolutionService {
                     UNIQUE KEY (`evolution`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
-        \struktal\ORM\Database\Database::getConnection()->exec($sql);
+        $connection = \struktal\ORM\Database\Database::getConnection();
+        if(!$connection instanceof \PDO) {
+            trigger_error("Database connection is not an instance of PDO", E_USER_WARNING);
+            return;
+        }
+
+        try {
+            $connection->exec($sql);
+        } catch(\Exception $e) {
+            trigger_error("Failed to create schema evolution table: " . $e->getMessage(), E_USER_WARNING);
+            throw $e;
+        }
     }
 }
 

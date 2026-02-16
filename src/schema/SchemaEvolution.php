@@ -1,6 +1,6 @@
 <?php
 
-namespace struktal\ORM\schema;
+namespace struktal\ORM\Schema;
 
 class SchemaEvolution extends \struktal\ORM\GenericEntity {
     public string $evolution = "";

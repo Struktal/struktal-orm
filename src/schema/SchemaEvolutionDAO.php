@@ -1,6 +1,6 @@
 <?php
 
-namespace struktal\ORM\schema;
+namespace struktal\ORM\Schema;
 
 class SchemaEvolutionDAO extends \struktal\ORM\GenericEntityDAO {
 
