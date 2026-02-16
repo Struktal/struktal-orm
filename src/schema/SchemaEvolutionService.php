@@ -11,6 +11,11 @@ class SchemaEvolutionService {
     public static function evolve(string $schemaEvolutionsDirectory): void {
         self::createSchemaEvolutionTable();
 
+        if(!is_dir($schemaEvolutionsDirectory)) {
+            trigger_error("Schema evolutions directory does not exist: " . $schemaEvolutionsDirectory, E_USER_WARNING);
+            return;
+        }
+
         $files = scandir($schemaEvolutionsDirectory);
         foreach($files as $file) {
             if(!str_ends_with($file, ".sql")) {
@@ -32,18 +37,32 @@ class SchemaEvolutionService {
             return;
         }
 
-        $struktalEvolutionFile = $schemaEvolutionsDirectory . DIRECTORY_SEPARATOR . $evolutionFile;
+        $struktalEvolutionFile = $schemaEvolutionsDirectory . DIRECTORY_SEPARATOR . $evolutionFile; // Prefixed variable to avoid conflicts with other variable spaces
 
         if(str_ends_with($evolutionFile, ".sql")) {
             $sql = file_get_contents($struktalEvolutionFile);
-            \struktal\ORM\Database\Database::getConnection()->beginTransaction();
+            if(!$sql) {
+                trigger_error("Failed to read SQL evolution file: " . $struktalEvolutionFile, E_USER_WARNING);
+                return;
+            }
+
+            $connection = \struktal\ORM\Database\Database::getConnection();
+            if(!$connection instanceof \PDO) {
+                trigger_error("Database connection is not an instance of PDO", E_USER_WARNING);
+                return;
+            }
+
+            $connection->beginTransaction();
             try {
-                \struktal\ORM\Database\Database::getConnection()->exec($sql);
-                \struktal\ORM\Database\Database::getConnection()->commit();
+                $connection->exec($sql);
+                $connection->commit();
             } catch(\Exception $e) {
-                \struktal\ORM\Database\Database::getConnection()->rollBack();
+                $connection->rollBack();
                 throw $e;
             }
+        } else {
+            // Other file types can be implemented here, e.g. PHP files, which can contain more complex evolutions
+            trigger_error("Unsupported schema evolution file type: " . $evolutionFile, E_USER_WARNING);
         }
 
         $evolution = new SchemaEvolution();
@@ -81,7 +100,7 @@ class SchemaEvolutionService {
                     `executed` DATETIME(3) NULL,
                     `created` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                     `updated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-                    PRIMARY KEY (`id`)
+                    PRIMARY KEY (`id`),
                     UNIQUE KEY (`evolution`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
