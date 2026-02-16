@@ -36,7 +36,14 @@ class SchemaEvolutionService {
 
         if(str_ends_with($evolutionFile, ".sql")) {
             $sql = file_get_contents($struktalEvolutionFile);
-            \struktal\ORM\Database\Database::getConnection()->exec($sql);
+            \struktal\ORM\Database\Database::getConnection()->beginTransaction();
+            try {
+                \struktal\ORM\Database\Database::getConnection()->exec($sql);
+                \struktal\ORM\Database\Database::getConnection()->commit();
+            } catch(\Exception $e) {
+                \struktal\ORM\Database\Database::getConnection()->rollBack();
+                throw $e;
+            }
         }
 
         $evolution = new SchemaEvolution();
