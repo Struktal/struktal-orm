@@ -30,5 +30,8 @@
         "test": [
             "vendor/bin/pest"
         ]
-    }
+    },
+    "bin": [
+        "bin/evolve"
+    ]
 }

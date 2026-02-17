@@ -16,6 +16,8 @@ class SchemaEvolutionService {
             return;
         }
 
+        $schemaEvolutionsDirectory = rtrim($schemaEvolutionsDirectory, DIRECTORY_SEPARATOR);
+
         $files = scandir($schemaEvolutionsDirectory);
         if(!$files) {
             trigger_error("Failed to read schema evolutions directory: " . $schemaEvolutionsDirectory, E_USER_WARNING);
