@@ -165,6 +165,20 @@ $user = User::dao()->getObject([
 User::dao()->delete($user);
 ```
 
+## Database evolutions
+
+This library also provides a way to initialize the database and perform migrations.
+To do so, create a directory in your project where you want to store the `.sql` files that define your database schema.
+Then, execute the evolution script:
+```shell
+php vendor/bin/evolve --config-loader PATH_TO_CONFIG_LOADER --evolutions-directory PATH_TO_EVOLUTIONS_DIRECTORY
+```
+with `PATH_TO_CONFIG_LOADER` being the path to a PHP file that sets up the database connection and `PATH_TO_EVOLUTIONS_DIRECTORY` being the path to the directory where you store the `.sql` files.
+The script will then execute all `.sql` files in the evolutions directory in alphabetical order and keep track of which files have already been executed.
+
+To create an initial setup for the database, create a file named, for example, `00000000-tables.sql`, and then, to adjust the database schema when implementing new features, you can create files prefixed with the current date, and then a short description of the implemented feature.
+
+
 # Dependencies
 
 This library uses the following dependencies:
