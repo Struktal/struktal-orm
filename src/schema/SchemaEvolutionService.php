@@ -61,12 +61,17 @@ class SchemaEvolutionService {
                 return;
             }
 
-            $connection->beginTransaction();
             try {
+                $connection->beginTransaction();
                 $connection->exec($sql);
-                $connection->commit();
+                if($connection->inTransaction()) {
+                    $connection->commit();
+                }
             } catch(\Exception $e) {
-                $connection->rollBack();
+                if($connection->inTransaction()) {
+                    $connection->rollBack();
+                }
+
                 throw $e;
             }
         } else {
