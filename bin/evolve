@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+
+[
+    "config-loader" => $configLoader,
+    "evolutions-directory" => $evolutionsDirectory
+] = getopt("", [
+    "config-loader:",
+    "evolutions-directory:"
+]);
+
+var_dump($configLoader, $evolutionsDirectory);
+
+if(!$configLoader) {
+    echo "Error: --config-loader option is required\n";
+    exit(1);
+}
+
+if(!$evolutionsDirectory) {
+    echo "Error: --evolutions-directory option is required\n";
+    exit(1);
+}
+
+require_once $configLoader;
+
+\struktal\ORM\schema\SchemaEvolutionService::evolve($evolutionsDirectory);

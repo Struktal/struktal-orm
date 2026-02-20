@@ -10,7 +10,8 @@
     "autoload":{
         "psr-4": {
             "struktal\\ORM\\": "src/",
-            "struktal\\ORM\\Database\\": "src/database/"
+            "struktal\\ORM\\Database\\": "src/database/",
+            "struktal\\ORM\\Schema\\": "src/schema/"
         }
     },
     "require": {
@@ -29,5 +30,8 @@
         "test": [
             "vendor/bin/pest"
         ]
-    }
+    },
+    "bin": [
+        "bin/evolve"
+    ]
 }
